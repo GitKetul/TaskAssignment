@@ -11,10 +11,12 @@ import Moya
 enum APIManager {
     
     case characters
+    case charactersDetails(charId:String)
+    
 }
 
 extension APIManager: TargetType {
-   
+    
     var baseURL: URL {
         return URL(string: "https://thronesapi.com/api/v2")!
     }
@@ -24,7 +26,9 @@ extension APIManager: TargetType {
         switch self {
         case .characters:
             return "/Characters"
-        
+        case .charactersDetails(let charId):
+            return "/Characters/\(charId)"
+            
         }
     }
     
@@ -33,7 +37,10 @@ extension APIManager: TargetType {
         switch self {
         case .characters:
             return .get
-        
+        case .charactersDetails:
+            return .get
+            
+            
         }
     }
     
@@ -46,7 +53,9 @@ extension APIManager: TargetType {
         switch self {
         case .characters:
             return .requestPlain
-        
+        case .charactersDetails:
+            return .requestPlain
+            
         }
     }
     
@@ -72,7 +81,27 @@ struct NetworkManager {
                 } catch {
                     print("")
                 }
+                
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    static func getCharacter(charId :String, completion: @escaping ((CharacterModel) -> Void)) {
+        
+        provider.request(.charactersDetails(charId: charId)) { (result) in
             
+            switch result {
+            case .success(let response):
+                
+                do {
+                    let dataResponse = try JSONDecoder().decode(CharacterModel.self, from: response.data)
+                    completion(dataResponse)
+                } catch {
+                    print("")
+                }
+                
             case .failure(let error):
                 print(error)
             }

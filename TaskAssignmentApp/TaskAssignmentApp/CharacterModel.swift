@@ -8,12 +8,7 @@
 import Foundation
 
 struct CharacterModel: Codable {
-    
-//    var userId: Int
-//    var id: Int
-//    var title: String
-//    var body: String
-    
+        
     var id: Int
     var firstName: String
     var lastName: String

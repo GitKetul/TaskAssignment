@@ -26,16 +26,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-//        self.tblCharacter.layer.cornerRadius = 10.0
-//        self.tblCharacter.clipsToBounds = true
         getDataFromServer()
 
     }
 
     private func getDataFromServer() {
         
-        NetworkManager.getList { (postModel) in
-            self.arrCharacter = postModel
+        NetworkManager.getList { (charModel) in
+            self.arrCharacter = charModel
         }
     }
 
@@ -50,7 +48,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120.0;//Choose your custom row height
+        return 120.0;
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -62,6 +60,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return UITableViewCell()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let storyBoard : UIStoryboard = UIStoryboard(name: "Main", bundle:nil)
+        let CharVC = storyBoard.instantiateViewController(withIdentifier: "CharacterDetailViewController") as! CharacterDetailViewController
+        CharVC.currCharID = "\(arrCharacter[indexPath.row].id)"
+        self.present(CharVC, animated:false, completion:nil)
+
     }
 }
 
